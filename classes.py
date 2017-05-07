@@ -25,7 +25,7 @@ class Weight:
 
 class Scale:
 
-    def __init__(self, length, scaleID, location=0):
+    def __init__(self, length, scaleID, location=0, baseScale=0):
         self.length = length
         self.scaleID = scaleID
         self.location = location
@@ -33,6 +33,8 @@ class Scale:
         self.scales = []
         self.mass = 0
         self.balance = 0
+        self.baseScale = baseScale
+        self.centerCoordinates = 0
 
     def addWeights(self, weight):
         self.weights.append(weight)
