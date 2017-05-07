@@ -1,53 +1,41 @@
+from classes import Player, Weight, Scale
 from random import randint
 from string import ascii_uppercase
 import pygame
 from pygame.locals import *
 import re
-"""
+
 pygame.init()
-displaywin = pygame.display.set_mode((450, 300))
-pygame.display.set_caption("Scales")"""
-
-class Player:
-
-    def __init__(self, name, icon, plrID):
-        self.name = name
-        self.icon = icon
-        self.points = 0
-        self.plrID = plrID
-
-    def addPoints(points):
-        if self.points == 0:
-            self.points = points
-        else:
-            self.points += points
-
-class Weight:
-
-    def __init__(self, weight, location, ownerID):
-        self.weight = weight
-        self.location = location ## [x,y], x=scale, y=spot on scale
-        self.ownerID = ownerID
-
-    def changeOwner(self, newownerID):
-        if self.ownerID != newownerID:
-            self.ownerID = newownerID
-
-class Scale:
-
-    def __init__(self, length, scaleID, location=0):
-        self.length = length
-        self.scaleID = scaleID
-        self.location = location
-        self.weights = []
-        self.scales = []
-        self.mass = 0
-        self.balance = 0
-
-    def addWeights(self, weight):
-        self.weights.append(weight)
-        self.mass += weight.weight
-        self.balance += int(weight.location[1])
+x = 1280
+y = 960
+DISPLAYWIN = pygame.display.set_mode((x, y))
+DISPLAYWIN.fill([100,100,100])
+pygame.display.set_caption("Scales")
+pygame.font.init()
+font = pygame.font.SysFont("",25)
+pygame.draw.rect(DISPLAYWIN, (0,0,0), (1, 1, x - 2, (y*0.1) + 6))
+players = pygame.draw.rect(DISPLAYWIN, (150,150,150), (5, 5, x - 10, y*0.1))
+pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.75) + 8, (y*0.1) + 8, (x*0.25) - 9, (y*0.1) + 4))
+turn = pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.75) + 10, (y*0.1) + 10, (x*0.25) - 15, y*0.1))
+pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.75) + 8, (y*0.2) + 13, (x*0.25) - 9, (y*0.8) - 14))
+high = pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.75) + 10, (y*0.2) + 15, (x*0.25) - 15, (y*0.8) - 20))
+pygame.draw.rect(DISPLAYWIN, (0,0,0), (1, (y*0.1) + 8, (x*0.75) + 6, (y*0.75) + 4))
+game = pygame.draw.rect(DISPLAYWIN, (150,150,150), (5, (y*0.1) + 10, (x*0.75), y*0.75))
+pygame.draw.rect(DISPLAYWIN, (0,0,0), (1, (y*0.85) + 13, (x*0.25) + 1, (y*0.15) - 14))
+weights = pygame.draw.rect(DISPLAYWIN, (150,150,150), (5, (y*0.85) + 15, (x*0.25) - 5, (y*0.15) - 20))
+pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.25) + 3, (y*0.85) + 13, (x*0.5) + 4, (y*0.15) - 14))
+scales = pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.25) + 5, (y*0.85) + 15, (x*0.5), (y*0.15) - 20))
+text = font.render("Players:",True,(0,0,0))
+DISPLAYWIN.blit(text,(10,y*0.04))
+text = font.render("High Scores:",True,(0,0,0))
+DISPLAYWIN.blit(text,(x*0.77,y*0.25))
+text = font.render("Now playing:",True,(0,0,0))
+DISPLAYWIN.blit(text,(x*0.77,y*0.15))
+text = font.render("Weights left:",True,(0,0,0))
+DISPLAYWIN.blit(text,(10,y*0.92))
+text = font.render("Scales placed:",True,(0,0,0))
+DISPLAYWIN.blit(text,((x*0.27),y*0.92))
+pygame.display.update()
 
 
 def createPlayer(number):
@@ -68,10 +56,10 @@ def placeScale(scales, scaleIDs, spotsTaken):
     locIndex = randint(0, baseScale.length - 1)  ##location of new scale on base scale
     locOnScale = locIndex - (baseScale.length / 2)
     scaleLoc = [baseScale.scaleID, locOnScale]
-        while locOnScale == 0 or scaleLoc in spotsTaken:
-            locIndex = randint(0, baseScale.length - 1)
-            locOnScale = locIndex - (baseScale.length / 2)
-            scaleLoc = [baseScale.scaleID, locOnScale]
+    while locOnScale == 0 or scaleLoc in spotsTaken:
+        locIndex = randint(0, baseScale.length - 1)
+        locOnScale = locIndex - (baseScale.length / 2)
+        scaleLoc = [baseScale.scaleID, locOnScale]
     scaleID = ascii_uppercase[len(scales)] ##letter ID for scale
     newScale = Scale(scaleLength, scaleID, scaleLoc)
     scales.append(newScale)
@@ -114,7 +102,7 @@ def isBalanced(scales, scale, weight, bscale):
     totalMass = 0
     for entry in scales:
         if entry.scaleID == scale.scaleID and entry.scaleID == bscale.scaleID:
-            if (entry.balance += weight) <= (entry.length / 2):
+            if (entry.balance + weight) <= (entry.length / 2):
                 return True
             else:
                 return False
@@ -122,18 +110,13 @@ def isBalanced(scales, scale, weight, bscale):
             totalMass = isBalanced(entry.scales, scale, weight, bscale)
         totalMass += (entry.mass * abs(entry.location[1]))
         if entry.scaleID == scale.scaleID:
-            if (entry.balance += weight) <= (entry.length / 2):
+            if (entry.balance + weight) <= (entry.length / 2):
                 totalMass += abs(weight)
                 return totalMass
             else:
                 return False
-        elif:
-            if entry.scaleID == bscale.scaleID:
-
         else:
             return totalMass
-
-
 
 
 def scoreCount(basescale, player):
@@ -153,6 +136,8 @@ def scoreCount(basescale, player):
 
 def main():
 
+    SCALESLEFT = 30
+
     while True:
         try:
             playerno = int(input("Give number of players\n"))
@@ -165,19 +150,21 @@ def main():
             scaleIDs = ['A']
             print("Length of scale A: ", bscale.length)
             scales.append(bscale)
-            weightsToBePlaced = randint(0, 20)
+            weightsToBePlaced = SCALESLEFT
             weightsLeft = weightsToBePlaced + 1
             turnsDone = 0
             newScaleChance = 0
             while turnsDone < weightsToBePlaced:
                 if newScaleChance == 1:
                     newScale = placeScale(scales, scaleIDs)
+                    pygame.display.update()
                     print("New scale placed on scale ", newScale.location[0], " at ", newScale.location[1])
                     print("Scale length of scale ", newScale.scaleID, " is ", newScale.length)
                 for plr in players:
                     print(plr.name, ", your turn.")
                     print("There are ", weightsLeft, " weights left.")
-                    placeWeight(plr, scales, scaleIDs, spotsTaken)
+                    placeWeight(plr, scales, scaleIDs, bscale, spotsTaken)
+                    pygame.display.update()
                     turnsDone += 1
                     weightsLeft -= 1
                 newScaleChance = randint(0, 1)
