@@ -28,36 +28,41 @@ def placeScale(scales, spotsTaken, scaleIDs):
     drawScale(newScale, baseScale)
     return newScale
 
-def isBalanced(scales, scale, weight, basescale):
-    totalMass = 0
-    for entry in scales:
-        if entry.scaleID == scale.scaleID and entry.scaleID == basescale.scaleID:
-            if (entry.balance + int(weight)) <= (entry.length / 2):
-                return True
-            else:
-                return False
-        if len(entry.scales) != 0:
-            totalMass = isBalanced(entry.scales, scale, weight, basescale)
-        totalMass += (entry.mass * abs(entry.location[1]))
-        if entry.scaleID == scale.scaleID:
-            if (entry.balance + int(weight)) <= (entry.length / 2):
-                totalMass += abs(int(weight))
-                return totalMass
-            else:
-                return False
-        else:
-            return totalMass
 
-def scoreCount(scaleA, points):
-    scalepoints = 0
+def scoreCount(scaleA, points, player, level=0):
     apoints = 0
     contained = list(scaleA.contains)
     for entry in contained:
         if entry.objectID == 0:
             if entry.location[0] != "A":
-                points = printera(entry, points) * abs(entry.location[1])
+                level += 1
+                points = scoreCount(entry, points, player, level) * abs(entry.location[1])
+                level -= 1
             else:
-                points += printera(entry, points) * abs(entry.location[1])
+                level += 1
+                points += scoreCount(entry, points, player, level) * abs(entry.location[1])
+                level -= 1
+                apoints += points
+                points = 0
+        else:
+            if scaleA.scaleID == "A" and entry.owner == player.pID:
+                apoints += entry.weight
+                points = apoints
+            elif scaleA.scaleID != "A" and entry.owner == player.pID:
+                points += entry.weight
+    if level == 0:
+        points = apoints
+    return points
+
+def isBalanced(scaleA, weight):
+    apoints = 0
+    contained = list(scaleA.contains)
+    for entry in contained:
+        if entry.objectID == 0:
+            if entry.location[0] != "A":
+                points = isBalanced(entry, points) * abs(entry.location[1])
+            else:
+                points += isBalanced(entry, points) * abs(entry.location[1])
                 apoints += points
                 points = 0
         else:
