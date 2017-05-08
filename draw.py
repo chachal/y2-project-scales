@@ -26,7 +26,7 @@ def drawBoard(menurects, plrrects):
     pygame.draw.rect(DISPLAYWIN, (0,0,0), (1, (y*0.85) + 13, (x*0.25) + 1, (y*0.15) - 14))
     weights = pygame.draw.rect(DISPLAYWIN, (150,150,150), (5, (y*0.85) + 15, (x*0.25) - 5, (y*0.15) - 20))
     pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.25) + 3, (y*0.85) + 13, (x*0.5) + 4, (y*0.15) - 14))
-    scales = pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.25) + 5, (y*0.85) + 15, (x*0.5), (y*0.15) - 20))
+    info = pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.25) + 5, (y*0.85) + 15, (x*0.5), (y*0.15) - 20))
 
     pygame.draw.rect(DISPLAYWIN, (0,0,0), (1, 1, x - 2, (y*0.1) + 6))
     players = pygame.draw.rect(DISPLAYWIN, (150,150,150), (5, 5, x - 10, y*0.1))
@@ -56,9 +56,9 @@ def drawBoard(menurects, plrrects):
     pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.75) + 30, (y*0.3) + 15, (x*0.25) - 55, (y*0.1) - 20))
     newgame = pygame.draw.rect(DISPLAYWIN, (100,100,100), ((x*0.75) + 32, (y*0.3) + 17, (x*0.25) - 59, (y*0.1) - 24))
     pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.75) + 30, (y*0.4) + 15, (x*0.25) - 55, (y*0.1) - 20))
-    loadgame = pygame.draw.rect(DISPLAYWIN, (100,100,100), ((x*0.75) + 32, (y*0.4) + 17, (x*0.25) - 59, (y*0.1) - 24))
-    pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.75) + 30, (y*0.5) + 15, (x*0.25) - 55, (y*0.1) - 20))
-    savegame = pygame.draw.rect(DISPLAYWIN, (100,100,100), ((x*0.75) + 32, (y*0.5) + 17, (x*0.25) - 59, (y*0.1) - 24))
+    startgame = pygame.draw.rect(DISPLAYWIN, (100,100,100), ((x*0.75) + 32, (y*0.4) + 17, (x*0.25) - 59, (y*0.1) - 24))
+    #pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.75) + 30, (y*0.5) + 15, (x*0.25) - 55, (y*0.1) - 20))
+    #savegame = pygame.draw.rect(DISPLAYWIN, (100,100,100), ((x*0.75) + 32, (y*0.5) + 17, (x*0.25) - 59, (y*0.1) - 24))
 
     text = font.render("MENU",True,(0,0,0))
     DISPLAYWIN.blit(text,(x*0.85,y*0.25))
@@ -66,24 +66,33 @@ def drawBoard(menurects, plrrects):
     DISPLAYWIN.blit(text,(x*0.84,y*0.35 - 5))
     text = font.render("Start game",True,(0,0,0))
     DISPLAYWIN.blit(text,(x*0.84,y*0.45 - 5))
-    text = font.render("Save game",True,(0,0,0))
-    DISPLAYWIN.blit(text,(x*0.84,y*0.55 - 5))
+    #text = font.render("Save game",True,(0,0,0))
+    #DISPLAYWIN.blit(text,(x*0.84,y*0.55 - 5))
 
     menurects.append(newgame)
-    menurects.append(loadgame)
-    menurects.append(savegame)
+    menurects.append(startgame)
+    #menurects.append(savegame)
 
     text = font.render("Now playing:",True,(0,0,0))
     DISPLAYWIN.blit(text,(x*0.77,y*0.15))
     text = font.render("Weights left:",True,(0,0,0))
     DISPLAYWIN.blit(text,(20,y*0.92))
-    text = font.render("Scales placed:",True,(0,0,0))
+    text = font.render("When players have been selected, click [Start game] to play",True,(0,0,0))
     DISPLAYWIN.blit(text,((x*0.27),y*0.92))
     pygame.display.update()
 
     for i in range(0, YGRIDS):
         for j in range(0, XGRIDS):
             pygame.draw.rect(DISPLAYWIN, (200,200,200), (6+(j*GRIDDIM), ((y*0.1 + 11)+(i*GRIDDIM)), GRIDDIM-2, GRIDDIM-2))
+    pygame.display.update()
+
+def changeInfo(gameStarted):
+    if gameStarted == True:
+        pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.25) + 5, (y*0.85) + 15, (x*0.5), (y*0.15) - 20))
+        text = font.render("Click desired location to place weight. If the spot already ",True,(0,0,0))
+        DISPLAYWIN.blit(text,((x*0.27),y*0.92))
+        text = font.render("contains a weight, click on the existing weight to place weight.",True,(0,0,0))
+        DISPLAYWIN.blit(text,((x*0.27),y*0.94))
     pygame.display.update()
 
 def enablePlayers(plr):
@@ -125,6 +134,31 @@ def disablePlayers(plr):
         DISPLAYWIN.blit(text,(x*0.87,y*0.04))
     pygame.display.update()
 
+def playerTurnInfo(PLRTURN):
+    if PLRTURN.plrID == 0:
+        pygame.draw.rect(DISPLAYWIN, (PLRTURN.color), ((x*0.87) + 10, (y*0.125) + 10, (x*0.11) - 15, y*0.05))
+        text = font.render("Player 1",True,(0,0,0))
+        DISPLAYWIN.blit(text,(x*0.9,y*0.15))
+    elif PLRTURN.plrID == 1:
+        pygame.draw.rect(DISPLAYWIN, (PLRTURN.color), ((x*0.87) + 10, (y*0.125) + 10, (x*0.11) - 15, y*0.05))
+        text = font.render("Player 2",True,(0,0,0))
+        DISPLAYWIN.blit(text,(x*0.8,y*0.15))
+    elif PLRTURN.plrID == 2:
+        pygame.draw.rect(DISPLAYWIN, (PLRTURN.color), ((x*0.87) + 10, (y*0.125) + 10, (x*0.11) - 15, y*0.05))
+        text = font.render("Player 3",True,(0,0,0))
+        DISPLAYWIN.blit(text,(x*0.8,y*0.15))
+    elif PLRTURN.plrID == 3:
+        pygame.draw.rect(DISPLAYWIN, (PLRTURN.color), ((x*0.87) + 10, (y*0.125) + 10, (x*0.11) - 15, y*0.05))
+        text = font.render("Player 4",True,(0,0,0))
+        DISPLAYWIN.blit(text,(x*0.8,y*0.15))
+    pygame.display.update()
+
+def weightsLeftCount(WEIGHTSLEFT):
+    pygame.draw.rect(DISPLAYWIN, (150,150,150), (x*0.125, (y*0.87) + 15, (x*0.1), (y*0.1)))
+    text = font.render(str(WEIGHTSLEFT),True,(0,0,0))
+    DISPLAYWIN.blit(text,(x*0.15,y*0.92))
+    pygame.display.update()
+
 def drawScale(newScale, baseScale=0):
     length = (newScale.length) * GRIDDIM
     if newScale.location == 0:
@@ -133,6 +167,7 @@ def drawScale(newScale, baseScale=0):
         scalewallr = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX + length/2, ORIGINY - 2*GRIDDIM - 10, 3, GRIDDIM))
         scalewalll = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - length/2 - 3, ORIGINY - 2*GRIDDIM - 10, 3, GRIDDIM))
         newScale.centerCoordinates = [int(ORIGINX), int(ORIGINY - 2*GRIDDIM + 10)]
+        scalearea = pygame.draw.rect(DISPLAYWIN, (200,100,200), (ORIGINX - length/2+1, ORIGINY - 3*GRIDDIM + 11, length - 2, GRIDDIM-2))
     else:
         height = len(baseScale.scales)
         basex = baseScale.centerCoordinates[0]
@@ -144,9 +179,8 @@ def drawScale(newScale, baseScale=0):
         scalewallr = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx + length/2, newy - 20, 3, GRIDDIM))
         scalewalll = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - length/2 - 3, newy - 20, 3, GRIDDIM))
         newScale.centerCoordinates = [int(newx), int(newy)]
+        scalearea = pygame.draw.rect(DISPLAYWIN, (200,100,200), (newx - length/2+1, newy - GRIDDIM + 2, length - 2, GRIDDIM-2))
 
-    text = font.render(newScale.scaleID,True,(0,0,0))
-    DISPLAYWIN.blit(text,((x*0.4),y*0.92))
     pygame.display.update()
 
 def drawWeight(weight, baseScale, player):
