@@ -1,8 +1,8 @@
 class Player:
 
-    def __init__(self, name, icon, plrID):
+    def __init__(self, name, color, plrID):
         self.name = name
-        self.icon = icon
+        self.color = color
         self.points = 0
         self.plrID = plrID
 

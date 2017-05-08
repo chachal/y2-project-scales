@@ -8,7 +8,6 @@ import re
 
 
 
-
 def createPlayer(number):
     plrname = None
     plricon = None
@@ -108,6 +107,82 @@ def scoreCount(basescale, player):
 
 
 def main():
+    menurects = []
+    plrrects = []
+    players = []
+    plrIDs = []
+    scales = []
+    spotsTaken = []
+    gameStarted = False
+    drawBoard(menurects, plrrects)
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                mousepos = pygame.mouse.get_pos()
+                if menurects[0].collidepoint(mousepos): ##menurect = [newgame, startgame]
+                    menurects = []
+                    plrrects = []
+                    players = []
+                    plrIDs = []
+                    scales = []
+                    spotsTaken = []
+                    gameStarted = False
+                    drawBoard(menurects, plrrects)
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                mousepos = pygame.mouse.get_pos()
+                if plrrects[0].collidepoint(mousepos) and 0 not in plrIDs:
+                    plr1 = Player("Player 1", (0,255,0), 0)
+                    enablePlayers(plr1)
+                    players.append(plr1)
+                    plrIDs.append(0)
+                elif plrrects[0].collidepoint(mousepos) and 0 in plrIDs:
+                    disablePlayers(plr1)
+                    players.remove(plr1)
+                    plrIDs.remove(0)
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                mousepos = pygame.mouse.get_pos()
+                if plrrects[1].collidepoint(mousepos) and 1 not in plrIDs:
+                    plr2 = Player("Player 2", (255,0,0), 1)
+                    enablePlayers(plr2)
+                    players.append(plr2)
+                    plrIDs.append(1)
+                elif plrrects[1].collidepoint(mousepos) and 1 in plrIDs:
+                    disablePlayers(plr2)
+                    players.remove(plr2)
+                    plrIDs.remove(1)
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                mousepos = pygame.mouse.get_pos()
+                if plrrects[2].collidepoint(mousepos) and 2 not in plrIDs:
+                    plr3 = Player("Player 3", (0,0,255), 2)
+                    enablePlayers(plr3)
+                    players.append(plr3)
+                    plrIDs.append(2)
+                elif plrrects[2].collidepoint(mousepos) and 2 in plrIDs:
+                    disablePlayers(plr3)
+                    players.remove(plr3)
+                    plrIDs.remove(2)
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                mousepos = pygame.mouse.get_pos()
+                if plrrects[3].collidepoint(mousepos) and 3 not in plrIDs:
+                    plr4 = Player("Player 4", (255,255,0), 3)
+                    enablePlayers(plr4)
+                    players.append(plr4)
+                    plrIDs.append(3)
+                elif plrrects[3].collidepoint(mousepos) and 3 in plrIDs:
+                    disablePlayers(plr4)
+                    players.remove(plr4)
+                    plrIDs.remove(3)
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                mousepos = pygame.mouse.get_pos()
+                if menurects[1].collidepoint(mousepos): ##menurect = [newgame, startgame]
+                    gameStarted = True
+
+        pygame.display.update()
+
+
+def maind():
 
     WEIGHTSLEFT = 30
 
@@ -119,11 +194,13 @@ def main():
             spotsTaken = []
             for i in range(playerno):
                 players.append(createPlayer(i))
+
             basescale = Scale(2 * randint(1,5), 'A')
             scaleIDs = ['A']
             print("Length of scale A: ", basescale.length)
             scales.append(basescale)
             drawScale(basescale)
+
             weightsToBePlaced = WEIGHTSLEFT
             weightsLeft = weightsToBePlaced
             turnsDone = 0
@@ -147,5 +224,4 @@ def main():
         except ValueError:
             print("Input an integer value")
 
-drawBoard()
 main()
