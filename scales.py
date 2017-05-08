@@ -48,19 +48,25 @@ def isBalanced(scales, scale, weight, basescale):
         else:
             return totalMass
 
-def scoreCount(basescale, player):
-    points = 0
-    scalespop = list(basescale.scales)
-    for entry in scalespop:     ##entry = Scale object in basescale list
-        while len(entry.scales) != 0: ##number of scales directly on top of entry-scale
-            popped = entry.scales.pop()
-            points = scoreCount(popped, player)
-        for weight in entry.weights:
-            if player.plrID == weight.ownerID:
-                points += weight.weight
-        if entry.location != 0:
-            points *= abs(entry.location[1])
-        return points
+def scoreCount(scaleA, points):
+    scalepoints = 0
+    apoints = 0
+    contained = list(scaleA.contains)
+    for entry in contained:
+        if entry.objectID == 0:
+            if entry.location[0] != "A":
+                points = printera(entry, points) * abs(entry.location[1])
+            else:
+                points += printera(entry, points) * abs(entry.location[1])
+                apoints += points
+                points = 0
+        else:
+            if scaleA.scaleID == "A":
+                apoints += entry.weight
+                points = apoints
+            else:
+                points += entry.weight
+    return points
 
 def main():
     menurects = []

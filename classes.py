@@ -26,7 +26,7 @@ class Weight:
 
 class Scale:
 
-    def __init__(self, length, scaleID, location=0):
+    def __init__(self, length, scaleID, location=[0,0]):
         self.objectID = 0
         self.length = length
         self.scaleID = scaleID
