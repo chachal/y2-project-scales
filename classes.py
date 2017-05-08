@@ -6,17 +6,11 @@ class Player:
         self.points = 0
         self.plrID = plrID
 
-    def addPoints(points):
-        if self.points == 0:
-            self.points = points
-        else:
-            self.points += points
-
 class Weight:
 
-    def __init__(self, weight, location, ownerID):
+    def __init__(self, mass, location, ownerID):
         self.objectID = 1
-        self.weight = weight
+        self.mass = mass
         self.location = location ## [x,y], x=scale, y=spot on scale
         self.ownerID = ownerID
 
@@ -32,9 +26,10 @@ class Scale:
         self.scaleID = scaleID
         self.location = location
         self.contains = []
+        self.weight
         self.centerCoordinates = 0
 
     def addWeights(self, weight):
-        self.weights.append(weight)
-        self.mass += weight.weight
+        self.contains.append(weight)
+        self.mass += weight.mass
         self.balance += int(weight.location[1])

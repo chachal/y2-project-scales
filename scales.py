@@ -55,23 +55,7 @@ def scoreCount(scaleA, points, player, level=0):
     return points
 
 def isBalanced(scaleA, weight):
-    apoints = 0
-    contained = list(scaleA.contains)
-    for entry in contained:
-        if entry.objectID == 0:
-            if entry.location[0] != "A":
-                points = isBalanced(entry, points) * abs(entry.location[1])
-            else:
-                points += isBalanced(entry, points) * abs(entry.location[1])
-                apoints += points
-                points = 0
-        else:
-            if scaleA.scaleID == "A":
-                apoints += entry.weight
-                points = apoints
-            else:
-                points += entry.weight
-    return points
+    pass
 
 def main():
     menurects = []
