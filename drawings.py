@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+from place import *
 
 pygame.init()
 x = 1280
@@ -90,9 +91,9 @@ def changeInfo(gameStarted):
     if gameStarted == True:
         pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.25) + 5, (y*0.85) + 15, (x*0.5), (y*0.15) - 20))
         text = font.render("Click desired location to place weight. If the spot already ",True,(0,0,0))
-        DISPLAYWIN.blit(text,((x*0.27),y*0.92))
+        DISPLAYWIN.blit(text,((x*0.27),y*0.91))
         text = font.render("contains a weight, click on the existing weight to place weight.",True,(0,0,0))
-        DISPLAYWIN.blit(text,((x*0.27),y*0.94))
+        DISPLAYWIN.blit(text,((x*0.27),y*0.93))
     pygame.display.update()
 
 def enablePlayers(plr):
@@ -142,15 +143,15 @@ def playerTurnInfo(PLRTURN):
     elif PLRTURN.plrID == 1:
         pygame.draw.rect(DISPLAYWIN, (PLRTURN.color), ((x*0.87) + 10, (y*0.125) + 10, (x*0.11) - 15, y*0.05))
         text = font.render("Player 2",True,(0,0,0))
-        DISPLAYWIN.blit(text,(x*0.8,y*0.15))
+        DISPLAYWIN.blit(text,(x*0.9,y*0.15))
     elif PLRTURN.plrID == 2:
         pygame.draw.rect(DISPLAYWIN, (PLRTURN.color), ((x*0.87) + 10, (y*0.125) + 10, (x*0.11) - 15, y*0.05))
         text = font.render("Player 3",True,(0,0,0))
-        DISPLAYWIN.blit(text,(x*0.8,y*0.15))
+        DISPLAYWIN.blit(text,(x*0.9,y*0.15))
     elif PLRTURN.plrID == 3:
         pygame.draw.rect(DISPLAYWIN, (PLRTURN.color), ((x*0.87) + 10, (y*0.125) + 10, (x*0.11) - 15, y*0.05))
         text = font.render("Player 4",True,(0,0,0))
-        DISPLAYWIN.blit(text,(x*0.8,y*0.15))
+        DISPLAYWIN.blit(text,(x*0.9,y*0.15))
     pygame.display.update()
 
 def weightsLeftCount(WEIGHTSLEFT):
@@ -161,27 +162,63 @@ def weightsLeftCount(WEIGHTSLEFT):
 
 def drawScale(newScale, baseScale=0):
     length = (newScale.length) * GRIDDIM
-    if newScale.location == 0:
-        scale = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - length/2 - 3, ORIGINY - 2*GRIDDIM + 10, length + 6, 6))
-        scaleleg = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - 3, ORIGINY - 2*GRIDDIM + 10, 6, 2*GRIDDIM))
-        scalewallr = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX + length/2, ORIGINY - 2*GRIDDIM - 10, 3, GRIDDIM))
-        scalewalll = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - length/2 - 3, ORIGINY - 2*GRIDDIM - 10, 3, GRIDDIM))
+    if newScale.location == [0, 0]:
         newScale.centerCoordinates = [int(ORIGINX), int(ORIGINY - 2*GRIDDIM + 10)]
-        scalearea = pygame.draw.rect(DISPLAYWIN, (200,100,200), (ORIGINX - length/2+1, ORIGINY - 3*GRIDDIM + 11, length - 2, GRIDDIM-2))
+        scaleSpots(newScale)
+        scale = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - length/2, ORIGINY - 2*GRIDDIM + 7, length, 3))
+        scaleleg = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - 3, ORIGINY - 2*GRIDDIM + 10, 3, 2*GRIDDIM))
     else:
         height = len(baseScale.scales)
         basex = baseScale.centerCoordinates[0]
         basey = baseScale.centerCoordinates[1]
         newx = basex + (newScale.location[1] * GRIDDIM)
         newy = basey - (1+height)*GRIDDIM
-        scale = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - length/2 - 3, newy, length + 6, 6))
-        scaleleg = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - 3, newy, 6, 2*GRIDDIM))
-        scalewallr = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx + length/2, newy - 20, 3, GRIDDIM))
-        scalewalll = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - length/2 - 3, newy - 20, 3, GRIDDIM))
+        scale = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - length/2, newy - 3, length, 3))
+        scaleleg = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - 3, newy, 3, (1 + height)*GRIDDIM))
         newScale.centerCoordinates = [int(newx), int(newy)]
-        scalearea = pygame.draw.rect(DISPLAYWIN, (200,100,200), (newx - length/2+1, newy - GRIDDIM + 2, length - 2, GRIDDIM-2))
-
     pygame.display.update()
 
-def drawWeight(weight, baseScale, player):
-    pass
+def scaleSpots(selScale):
+    length = (selScale.length) * GRIDDIM
+    centerX = selScale.centerCoordinates[0]
+    centerY = selScale.centerCoordinates[1]
+    for i in range(0, selScale.length):
+        grid = pygame.draw.rect(DISPLAYWIN, (175,175,175), ((i*GRIDDIM) + centerX - length/2 + 1, centerY - GRIDDIM + 1, GRIDDIM - 2, GRIDDIM - 4))
+        selScale.spots.append(grid)
+    pygame.display.update()
+
+def drawWeight(spot, selScale, spotsTaken, player):
+    inSpot = 0
+    scaleLen = selScale.length
+    i = selScale.spots.index(spot)
+    length = (selScale.length) * GRIDDIM
+    actLoca = []
+    centerX = selScale.centerCoordinates[0]
+    centerY = selScale.centerCoordinates[1]
+    if i >= (scaleLen / 2):
+        actLoca = [selScale.scaleID, i - (scaleLen / 2) + 1]
+    else:
+        actLoca = [selScale.scaleID, i - (scaleLen / 2)]
+    inSpot = placeWeight(actLoca, selScale, spotsTaken, player) #returns number of lumps in spot, after placement of new lump
+    if inSpot == "SCALE":
+        return False
+    elif inSpot == "IMBALANCE":
+        DISPLAYWIN.blit(text,(20,y*0.92))
+        text = font.render("Weight not added, resulting imbalance would've been too large",True,(0,0,0))
+        DISPLAYWIN.blit(text,((x*0.27),y*0.92))
+        pygame.display.update()
+        return True
+    else:
+        grid = pygame.draw.rect(DISPLAYWIN, (175,175,175), ((i*GRIDDIM) + centerX - length/2 + 1, centerY - GRIDDIM + 1, GRIDDIM - 2, GRIDDIM - 5))
+        frame = pygame.draw.rect(DISPLAYWIN, (0,0,0), ((i*GRIDDIM) + centerX - length/2 + 10, centerY - GRIDDIM + 17, GRIDDIM - 20, GRIDDIM - 20))
+        lump = pygame.draw.rect(DISPLAYWIN, (player.color), ((i*GRIDDIM) + centerX - length/2 + 12, centerY - GRIDDIM + 19, GRIDDIM - 24, GRIDDIM - 24))
+        if inSpot < 10:
+            pass
+            text = font.render(str(inSpot + 1),True,(0,0,0))
+            DISPLAYWIN.blit(text,((i*GRIDDIM) + centerX - length/2 + 10, centerY - GRIDDIM + 1))
+        else:
+            text = font.render(str(inSpot + 1),True,(0,0,0))
+            DISPLAYWIN.blit(text,((i*GRIDDIM) + centerX - length/2 + 6, centerY - GRIDDIM + 1))
+    changeInfo(True)
+    pygame.display.update()
+    return True

@@ -1,61 +1,13 @@
 from classes import Player, Weight, Scale
 from random import randint
 from string import ascii_uppercase
-from draw import *
+from drawings import *
+from calculate import *
+from place import *
 import pygame
 from pygame.locals import *
 import re
 
-
-
-def placeScale(scales, spotsTaken, scaleIDs):
-    scaleLength = 2 * (randint(1, 5))
-    baseScale = scales[randint(0, len(scales) - 1)] ##scale where new scale is placed
-    locIndex = randint(0, baseScale.length - 1)  ##location of new scale on base scale
-    locOnScale = locIndex - (baseScale.length / 2)
-    scaleLoc = [baseScale.scaleID, locOnScale]
-    while locOnScale == 0 or scaleLoc in spotsTaken:
-        locIndex = randint(0, baseScale.length - 1)
-        locOnScale = locIndex - (baseScale.length / 2)
-        scaleLoc = [baseScale.scaleID, locOnScale]
-    scaleID = ascii_uppercase[len(scales)] ##letter ID for scale
-    newScale = Scale(scaleLength, scaleID, scaleLoc)
-    print(newScale.scaleID)
-    scales.append(newScale)
-    scaleIDs.append(newScale.scaleID)
-    baseScale.contains.append(newScale)
-    spotsTaken.append(newScale.location)
-    drawScale(newScale, baseScale)
-    return newScale
-
-
-def scoreCount(scaleA, points, player, level=0):
-    apoints = 0
-    contained = list(scaleA.contains)
-    for entry in contained:
-        if entry.objectID == 0:
-            if entry.location[0] != "A":
-                level += 1
-                points = scoreCount(entry, points, player, level) * abs(entry.location[1])
-                level -= 1
-            else:
-                level += 1
-                points += scoreCount(entry, points, player, level) * abs(entry.location[1])
-                level -= 1
-                apoints += points
-                points = 0
-        else:
-            if scaleA.scaleID == "A" and entry.owner == player.pID:
-                apoints += entry.weight
-                points = apoints
-            elif scaleA.scaleID != "A" and entry.owner == player.pID:
-                points += entry.weight
-    if level == 0:
-        points = apoints
-    return points
-
-def isBalanced(scaleA, weight):
-    pass
 
 def main():
     menurects = []
@@ -127,22 +79,38 @@ def main():
                     plrIDs.remove(3)
             if event.type == MOUSEBUTTONDOWN and event.button == 1: ##Start game
                 mousepos = pygame.mouse.get_pos()
-                if menurects[1].collidepoint(mousepos) and gameStarted == False:
+                if menurects[1].collidepoint(mousepos) and gameStarted == False and len(players) != 0:
                     gameStarted = True
-                    basescale = Scale(2 * randint(2,5), 'A')
+                    changeInfo(gameStarted)
+                    basescale = Scale(2 * randint(5,10), 'A')
                     scaleIDs = ['A']
                     scales.append(basescale)
                     drawScale(basescale)
                     WEIGHTSLEFT = 10 * len(players)
-                    turnsDone = 0
-                    newScaleChance = 0
+                    TURNSDONE = 0
+                    NEWSCALECHANCE = 1
                     PLRTURN = players[0]
-                    changeInfo(gameStarted)
-                    weightsLeftCount(WEIGHTSLEFT)
                     playerTurnInfo(PLRTURN)
-            #if event.type == MOUSEBUTTONDOWN and event.button == 1: ##Place weight
-                #mousepos = pygame.mouse.get_pos()
-                #if menurects[1].collidepoint(mousepos)
+                    weightsLeftCount(WEIGHTSLEFT)
+            if event.type == MOUSEBUTTONDOWN and event.button == 1: ##Place weight
+                mousepos = pygame.mouse.get_pos()
+                for scale1 in scales:
+                    for spot1 in scale1.spots:
+                        if spot1.collidepoint(mousepos) and gameStarted == True:
+                            placed = drawWeight(spot1, scale1, spotsTaken, PLRTURN) #return true if weight successfully placed or placing would've caused the scales to fall, false if spot taken by scale
+                            if placed:
+                                if PLRTURN == players[-1]:
+                                    PLRTURN = players[0]
+                                else:
+                                    PLRTURN = players[PLRTURN.plrID+1]
+                                playerTurnInfo(PLRTURN)
+                                WEIGHTSLEFT -= 1
+                                weightsLeftCount(WEIGHTSLEFT)
+                                if PLRTURN.plrID == 0 and NEWSCALECHANCE == randint(0,2):
+                                    placeScale(scales, spotsTaken, scaleIDs)
+
+
+
 
         pygame.display.update()
 

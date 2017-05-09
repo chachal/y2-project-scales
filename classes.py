@@ -26,8 +26,11 @@ class Scale:
         self.scaleID = scaleID
         self.location = location
         self.contains = []
-        self.weight
+        self.scales = []
+        self.mass = 0
+        self.balance = 0
         self.centerCoordinates = 0
+        self.spots = []
 
     def addWeights(self, weight):
         self.contains.append(weight)
