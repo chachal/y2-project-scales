@@ -28,7 +28,6 @@ def placeScale(scales, spotsTaken, scaleIDs):
     scaleIDs.append(newScale.scaleID)
     baseScale.contains.append(newScale)
     baseScale.scales.append(newScale)
-    print("NEWSCALE LOCATION & ID: ", newScale.location, newScale.scaleID)
     spotsTaken.append([newScale.location, 0]) # spotsTaken[i][1] == 0 if scale, == if weight
     drawings.drawScale(newScale, baseScale)
     drawings.scaleSpots(newScale)
@@ -39,13 +38,13 @@ def placeWeight(wLoc, scale, spotsTaken, player):
     wmass = abs(int(wLoc[1]))
     for entry in scale.contains:
         if entry.location == wLoc and entry.objectID == 1:
-            entry.changeOwner(player)
+            entry.changeOwner(player.plrID)
             inSpot += 1
         elif entry.location == wLoc and entry.objectID == 0:
             return "SCALE"
     balanced = isBalanced(scale, wLoc) #return true if scale balance after adding weight
     if balanced:
-        newWeight = Weight(wmass, wLoc, player)
+        newWeight = Weight(wmass, wLoc, player.plrID)
         scale.addWeights(newWeight)
         spotsTaken.append([wLoc, 1]) # spotsTaken[i][1] == 0 if scale, == if weight
         return inSpot

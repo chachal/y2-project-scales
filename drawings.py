@@ -58,8 +58,6 @@ def drawBoard(menurects, plrrects):
     newgame = pygame.draw.rect(DISPLAYWIN, (100,100,100), ((x*0.75) + 32, (y*0.3) + 17, (x*0.25) - 59, (y*0.1) - 24))
     pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.75) + 30, (y*0.4) + 15, (x*0.25) - 55, (y*0.1) - 20))
     startgame = pygame.draw.rect(DISPLAYWIN, (100,100,100), ((x*0.75) + 32, (y*0.4) + 17, (x*0.25) - 59, (y*0.1) - 24))
-    #pygame.draw.rect(DISPLAYWIN, (0,0,0), ((x*0.75) + 30, (y*0.5) + 15, (x*0.25) - 55, (y*0.1) - 20))
-    #savegame = pygame.draw.rect(DISPLAYWIN, (100,100,100), ((x*0.75) + 32, (y*0.5) + 17, (x*0.25) - 59, (y*0.1) - 24))
 
     text = font.render("MENU",True,(0,0,0))
     DISPLAYWIN.blit(text,(x*0.85,y*0.25))
@@ -67,12 +65,9 @@ def drawBoard(menurects, plrrects):
     DISPLAYWIN.blit(text,(x*0.84,y*0.35 - 5))
     text = font.render("Start game",True,(0,0,0))
     DISPLAYWIN.blit(text,(x*0.84,y*0.45 - 5))
-    #text = font.render("Save game",True,(0,0,0))
-    #DISPLAYWIN.blit(text,(x*0.84,y*0.55 - 5))
 
     menurects.append(newgame)
     menurects.append(startgame)
-    #menurects.append(savegame)
 
     text = font.render("Now playing:",True,(0,0,0))
     DISPLAYWIN.blit(text,(x*0.77,y*0.15))
@@ -85,6 +80,26 @@ def drawBoard(menurects, plrrects):
     for i in range(0, YGRIDS):
         for j in range(0, XGRIDS):
             pygame.draw.rect(DISPLAYWIN, (200,200,200), (6+(j*GRIDDIM), ((y*0.1 + 11)+(i*GRIDDIM)), GRIDDIM-2, GRIDDIM-2))
+            if i == YGRIDS - 1:
+                num = j-int(XGRIDS/2)
+                if num < 0:
+                    if num == -1:
+                        pass
+                    else:
+                        text = font.render(str(num),True,(0,0,0))
+                        if num > -10:
+                            DISPLAYWIN.blit(text,(12+(j*GRIDDIM),((y*0.1 + 17)+(i*GRIDDIM))))
+                        else:
+                            DISPLAYWIN.blit(text,(9+(j*GRIDDIM),((y*0.1 + 17)+(i*GRIDDIM))))
+                else:
+                    if num+1 == 1:
+                        pass
+                    else:
+                        text = font.render(str(num+1),True,(0,0,0))
+                        if num < 10:
+                            DISPLAYWIN.blit(text,(14+(j*GRIDDIM),((y*0.1 + 17)+(i*GRIDDIM))))
+                        else:
+                            DISPLAYWIN.blit(text,(11+(j*GRIDDIM),((y*0.1 + 17)+(i*GRIDDIM))))
     pygame.display.update()
 
 def changeInfo(gameStarted):
@@ -94,6 +109,22 @@ def changeInfo(gameStarted):
         DISPLAYWIN.blit(text,((x*0.27),y*0.91))
         text = font.render("contains a weight, click on the existing weight to place weight.",True,(0,0,0))
         DISPLAYWIN.blit(text,((x*0.27),y*0.93))
+    pygame.display.update()
+
+def scoreInfo(players, winner):
+    if len(winner) == 1:
+        pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.25) + 5, (y*0.85) + 15, (x*0.5), (y*0.15) - 20))
+        text = font.render("The winner is: Player " + str(winner[0].plrID + 1) + "! Scores:",True,(0,0,0))
+        DISPLAYWIN.blit(text,((x*0.27),y*0.87+5))
+    else:
+        pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.25) + 5, (y*0.85) + 15, (x*0.5), (y*0.15) - 20))
+        text = font.render("It's a draw! Scores:",True,(0,0,0))
+        DISPLAYWIN.blit(text,((x*0.27),y*0.87+5))
+    j = 0
+    for i in players:
+        text = font.render("Player " + str(i.plrID + 1) + ": " + str(i.points),True,(0,0,0))
+        DISPLAYWIN.blit(text,((x*0.27),y*0.90+j))
+        j += 20
     pygame.display.update()
 
 def enablePlayers(plr):
@@ -204,9 +235,9 @@ def drawWeight(spot, selScale, spotsTaken, player):
     centerX = selScale.centerCoordinates[0]
     centerY = selScale.centerCoordinates[1]
     if i >= (scaleLen / 2):
-        actLoca = [selScale.scaleID, i - (scaleLen / 2) + 1]
+        actLoca = [selScale.scaleID, int(i - (scaleLen / 2) + 1)]
     else:
-        actLoca = [selScale.scaleID, i - (scaleLen / 2)]
+        actLoca = [selScale.scaleID, int(i - (scaleLen / 2))]
     inSpot = placeWeight(actLoca, selScale, spotsTaken, player) #returns number of lumps in spot, after placement of new lump
     if inSpot == "SCALE":
         return False

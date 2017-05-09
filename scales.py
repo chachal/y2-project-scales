@@ -86,17 +86,19 @@ def main():
                     scaleIDs = ['A']
                     scales.append(basescale)
                     drawScale(basescale)
-                    WEIGHTSLEFT = 10 * len(players)
+                    WEIGHTSLEFT = 5 * len(players)
+                    GAMEEND = WEIGHTSLEFT
                     TURNSDONE = 0
                     NEWSCALECHANCE = 1
                     PLRTURN = players[0]
                     playerTurnInfo(PLRTURN)
                     weightsLeftCount(WEIGHTSLEFT)
+                    winner = []
             if event.type == MOUSEBUTTONDOWN and event.button == 1: ##Place weight
                 mousepos = pygame.mouse.get_pos()
                 for scale1 in scales:
                     for spot1 in scale1.spots:
-                        if spot1.collidepoint(mousepos) and gameStarted == True:
+                        if spot1.collidepoint(mousepos) and gameStarted == True and WEIGHTSLEFT > 0:
                             placed = drawWeight(spot1, scale1, spotsTaken, PLRTURN) #return true if weight successfully placed or placing would've caused the scales to fall, false if spot taken by scale
                             if placed:
                                 if PLRTURN == players[-1]:
@@ -105,35 +107,18 @@ def main():
                                     PLRTURN = players[PLRTURN.plrID+1]
                                 playerTurnInfo(PLRTURN)
                                 WEIGHTSLEFT -= 1
+                                TURNSDONE += 1
                                 weightsLeftCount(WEIGHTSLEFT)
                                 if PLRTURN.plrID == 0 and NEWSCALECHANCE == randint(0,2):
                                     placeScale(scales, spotsTaken, scaleIDs)
-
-
-
+                                if TURNSDONE == GAMEEND:
+                                    for pl in players:
+                                        scoreCount(basescale, pl.points, pl)
+                                    players = sorted(players, key=lambda player: player.points, reverse=True)
+                                    winner.append(players[0])
+                                    scoreInfo(players, winner)
 
         pygame.display.update()
 
-
-def maind():
-
-            turnsDone = 0
-            newScaleChance = 0
-            while turnsDone < weightsToBePlaced:
-                if newScaleChance == 1:
-                    newScale = placeScale(scales, spotsTaken, scaleIDs)
-                    pygame.display.update()
-                    print("New scale placed on scale ", newScale.location[0], " at ", newScale.location[1])
-                    print("Scale length of scale ", newScale.scaleID, " is ", newScale.length)
-                for plr in players:
-                    print(plr.name, ", your turn.")
-                    print("There are ", weightsLeft, " weights left.")
-                    placeWeight(plr, scales, scaleIDs, basescale, spotsTaken)
-                    pygame.display.update()
-                    turnsDone += 1
-                    weightsLeft -= 1
-                newScaleChance = randint(1, 1)
-            for playr in players:
-                scoreCount(basescale, playr)
 
 main()
