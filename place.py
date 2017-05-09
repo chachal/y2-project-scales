@@ -6,7 +6,7 @@ from string import ascii_uppercase
 import drawings
 
 def placeScale(scales, spotsTaken, scaleIDs):
-    scaleLength = 2 * (randint(3, 7))
+    scaleLength = 2 * (randint(3, 5))
     baseScale = scales[randint(0, len(scales) - 1)] ##scale where new scale is placed
     locIndex = randint(0, baseScale.length - 1)  ##location of new scale on base scale
     locOnScale = locIndex - (baseScale.length / 2)
@@ -23,7 +23,7 @@ def placeScale(scales, spotsTaken, scaleIDs):
                 locOnScale = 0
                 break
     scaleID = ascii_uppercase[len(scales)] ##letter ID for scale
-    newScale = Scale(scaleLength, scaleID, scaleLoc)
+    newScale = Scale(scaleLength, scaleID, baseScale, scaleLoc)
     scales.append(newScale)
     scaleIDs.append(newScale.scaleID)
     baseScale.contains.append(newScale)

@@ -86,7 +86,7 @@ def main():
                     scaleIDs = ['A']
                     scales.append(basescale)
                     drawScale(basescale)
-                    WEIGHTSLEFT = 10 * len(players) ###### Number of turn per player * players
+                    WEIGHTSLEFT = 20 * len(players) ###### Number of turn per player * players
                     GAMEEND = WEIGHTSLEFT
                     TURNSDONE = 0
                     NEWSCALECHANCE = 1
@@ -109,7 +109,7 @@ def main():
                                 WEIGHTSLEFT -= 1
                                 TURNSDONE += 1
                                 weightsLeftCount(WEIGHTSLEFT)
-                                if PLRTURN.plrID == 0 and NEWSCALECHANCE == randint(0,3): #########Change odds for new scales to appear
+                                if PLRTURN.plrID == 0 and NEWSCALECHANCE == randint(0,4): #########Change odds for new scales to appear
                                     placeScale(scales, spotsTaken, scaleIDs)
                                 if TURNSDONE == GAMEEND:
                                     for pl in players:
