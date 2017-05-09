@@ -82,11 +82,11 @@ def main():
                 if menurects[1].collidepoint(mousepos) and gameStarted == False and len(players) != 0:
                     gameStarted = True
                     changeInfo(gameStarted)
-                    basescale = Scale(2 * randint(5,10), 'A')
+                    basescale = Scale(2 * randint(5,7), 'A')
                     scaleIDs = ['A']
                     scales.append(basescale)
                     drawScale(basescale)
-                    WEIGHTSLEFT = 5 * len(players)
+                    WEIGHTSLEFT = 10 * len(players) ###### Number of turn per player * players
                     GAMEEND = WEIGHTSLEFT
                     TURNSDONE = 0
                     NEWSCALECHANCE = 1
@@ -109,7 +109,7 @@ def main():
                                 WEIGHTSLEFT -= 1
                                 TURNSDONE += 1
                                 weightsLeftCount(WEIGHTSLEFT)
-                                if PLRTURN.plrID == 0 and NEWSCALECHANCE == randint(0,2):
+                                if PLRTURN.plrID == 0 and NEWSCALECHANCE == randint(0,1): #########Change odds for new scales to appear
                                     placeScale(scales, spotsTaken, scaleIDs)
                                 if TURNSDONE == GAMEEND:
                                     for pl in players:

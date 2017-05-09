@@ -201,7 +201,7 @@ def drawScale(newScale, baseScale=0):
         for i in range(0, GRIDDIM):
             pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - GRIDDIM + i, ORIGINY-i+10, 2*GRIDDIM-2*i, 1))
     else:
-        height = len(baseScale.scales)
+        height = len(baseScale.scales)*2
         basex = baseScale.centerCoordinates[0]
         basey = baseScale.centerCoordinates[1]
         newx = basex + (newScale.location[1] * GRIDDIM)
