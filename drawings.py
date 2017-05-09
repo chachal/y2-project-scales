@@ -165,17 +165,25 @@ def drawScale(newScale, baseScale=0):
     if newScale.location == [0, 0]:
         newScale.centerCoordinates = [int(ORIGINX), int(ORIGINY - 2*GRIDDIM + 10)]
         scaleSpots(newScale)
-        scale = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - length/2, ORIGINY - 2*GRIDDIM + 7, length, 3))
-        scaleleg = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - 3, ORIGINY - 2*GRIDDIM + 10, 3, 2*GRIDDIM))
+        scale = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - length/2, ORIGINY - 2*GRIDDIM + 7, length, 4))
+        scaleleg = pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - 2, ORIGINY - 2*GRIDDIM + 10, 4, 2*GRIDDIM))
+        for i in range(0, GRIDDIM):
+            pygame.draw.rect(DISPLAYWIN, (0,0,0), (ORIGINX - GRIDDIM + i, ORIGINY-i+10, 2*GRIDDIM-2*i, 1))
     else:
         height = len(baseScale.scales)
         basex = baseScale.centerCoordinates[0]
         basey = baseScale.centerCoordinates[1]
         newx = basex + (newScale.location[1] * GRIDDIM)
         newy = basey - (1+height)*GRIDDIM
-        scale = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - length/2, newy - 3, length, 3))
-        scaleleg = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - 3, newy, 3, (1 + height)*GRIDDIM))
+        scale = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - length/2, newy - 3, length, 4))
+        scaleleg = pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - 2, newy, 4, (1 + height)*GRIDDIM))
         newScale.centerCoordinates = [int(newx), int(newy)]
+        if newScale.location[1] < 0:
+            for i in range(GRIDDIM, 0, -1):
+                pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx, newy+(1 + height)*GRIDDIM-i-3, GRIDDIM-i, 1))
+        elif newScale.location[1] > 0:
+            for i in range(GRIDDIM, 0, -1):
+                pygame.draw.rect(DISPLAYWIN, (0,0,0), (newx - GRIDDIM + i, newy+(1 + height)*GRIDDIM-i-3, GRIDDIM-i, 1))
     pygame.display.update()
 
 def scaleSpots(selScale):
@@ -209,11 +217,10 @@ def drawWeight(spot, selScale, spotsTaken, player):
         pygame.display.update()
         return True
     else:
-        grid = pygame.draw.rect(DISPLAYWIN, (175,175,175), ((i*GRIDDIM) + centerX - length/2 + 1, centerY - GRIDDIM + 1, GRIDDIM - 2, GRIDDIM - 5))
+        grid = pygame.draw.rect(DISPLAYWIN, (175,175,175), ((i*GRIDDIM) + centerX - length/2 + 3, centerY - GRIDDIM + 1, GRIDDIM - 8, GRIDDIM - 5))
         frame = pygame.draw.rect(DISPLAYWIN, (0,0,0), ((i*GRIDDIM) + centerX - length/2 + 10, centerY - GRIDDIM + 17, GRIDDIM - 20, GRIDDIM - 20))
         lump = pygame.draw.rect(DISPLAYWIN, (player.color), ((i*GRIDDIM) + centerX - length/2 + 12, centerY - GRIDDIM + 19, GRIDDIM - 24, GRIDDIM - 24))
-        if inSpot < 10:
-            pass
+        if inSpot < 9:
             text = font.render(str(inSpot + 1),True,(0,0,0))
             DISPLAYWIN.blit(text,((i*GRIDDIM) + centerX - length/2 + 10, centerY - GRIDDIM + 1))
         else:

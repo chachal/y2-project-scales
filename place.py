@@ -28,6 +28,7 @@ def placeScale(scales, spotsTaken, scaleIDs):
     scaleIDs.append(newScale.scaleID)
     baseScale.contains.append(newScale)
     baseScale.scales.append(newScale)
+    print("NEWSCALE LOCATION & ID: ", newScale.location, newScale.scaleID)
     spotsTaken.append([newScale.location, 0]) # spotsTaken[i][1] == 0 if scale, == if weight
     drawings.drawScale(newScale, baseScale)
     drawings.scaleSpots(newScale)
