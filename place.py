@@ -33,7 +33,7 @@ def placeScale(scales, spotsTaken, scaleIDs):
     drawings.scaleSpots(newScale)
 
 
-def placeWeight(wLoc, scale, spotsTaken, player):
+def placeWeight(wLoc, scale, spotsTaken, player, basescale, scales):
     inSpot = 0
     wmass = abs(int(wLoc[1]))
     for entry in scale.contains:
@@ -42,7 +42,7 @@ def placeWeight(wLoc, scale, spotsTaken, player):
             inSpot += 1
         elif entry.location == wLoc and entry.objectID == 0:
             return "SCALE"
-    balanced = isBalanced(scale, wLoc) #return true if scale balance after adding weight
+    balanced = isBalanced(scale, wLoc, basescale, scales) #return true if scale balances after adding weight
     if balanced:
         newWeight = Weight(wmass, wLoc, player.plrID)
         scale.addWeights(newWeight)

@@ -46,5 +46,28 @@ def sortContains(contlist):
     return contained
 
 
-def isBalanced(scaleA, weight):
+def isBalanced(scaleToPlace, weightLoc, scaleA, scales, bal=0, level=0):
+    if scaleA.scaleID == scaleToPlace.scaleID:
+        if abs(scaleA.balance + weightLoc[1]) > int(scaleA.length/2):
+            return False
+
+    for entry in scaleA.scales:
+        if not entry.scales and entry.scaleID == scaleToPlace.scaleID:
+            scaleA.balance += entry.mass
+            if abs(scaleA.balance + (weightLoc[1] * entry.location[1])) > int(scaleA.length/2):
+                return False
+            elif abs(entry.balance + weightLoc[1]) > int(entry.length/2):
+                return False
+            else:
+                return True
+        elif entry.scales and entry.scaleID == scaleToPlace.scaleID:
+            isBalanced(scaleToPlace, weightLoc, entry, scales, bal=0, level=0)
+        else:
+            scaleA.balance += entry.mass
+
+
+    return True
+
+
+
     return True

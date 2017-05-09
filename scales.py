@@ -99,7 +99,7 @@ def main():
                 for scale1 in scales:
                     for spot1 in scale1.spots:
                         if spot1.collidepoint(mousepos) and gameStarted == True and WEIGHTSLEFT > 0:
-                            placed = drawWeight(spot1, scale1, spotsTaken, PLRTURN) #return true if weight successfully placed or placing would've caused the scales to fall, false if spot taken by scale
+                            placed = drawWeight(spot1, scale1, spotsTaken, PLRTURN, basescale, scales) #return true if weight successfully placed or placing would've caused the scales to fall, false if spot taken by scale
                             if placed:
                                 if PLRTURN == players[-1]:
                                     PLRTURN = players[0]
@@ -109,7 +109,7 @@ def main():
                                 WEIGHTSLEFT -= 1
                                 TURNSDONE += 1
                                 weightsLeftCount(WEIGHTSLEFT)
-                                if PLRTURN.plrID == 0 and NEWSCALECHANCE == randint(0,1): #########Change odds for new scales to appear
+                                if PLRTURN.plrID == 0 and NEWSCALECHANCE == randint(0,3): #########Change odds for new scales to appear
                                     placeScale(scales, spotsTaken, scaleIDs)
                                 if TURNSDONE == GAMEEND:
                                     for pl in players:

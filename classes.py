@@ -34,5 +34,8 @@ class Scale:
 
     def addWeights(self, weight):
         self.contains.append(weight)
-        self.mass += weight.mass
+        if self.location == [0, 0]:
+            self.mass += weight.mass
+        else:
+            self.mass += weight.mass * abs(self.location[1])
         self.balance += int(weight.location[1])

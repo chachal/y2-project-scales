@@ -226,7 +226,7 @@ def scaleSpots(selScale):
         selScale.spots.append(grid)
     pygame.display.update()
 
-def drawWeight(spot, selScale, spotsTaken, player):
+def drawWeight(spot, selScale, spotsTaken, player, basescale, scales):
     inSpot = 0
     scaleLen = selScale.length
     i = selScale.spots.index(spot)
@@ -238,11 +238,11 @@ def drawWeight(spot, selScale, spotsTaken, player):
         actLoca = [selScale.scaleID, int(i - (scaleLen / 2) + 1)]
     else:
         actLoca = [selScale.scaleID, int(i - (scaleLen / 2))]
-    inSpot = placeWeight(actLoca, selScale, spotsTaken, player) #returns number of lumps in spot, after placement of new lump
+    inSpot = placeWeight(actLoca, selScale, spotsTaken, player, basescale, scales) #returns number of lumps in spot, after placement of new lump
     if inSpot == "SCALE":
         return False
     elif inSpot == "IMBALANCE":
-        DISPLAYWIN.blit(text,(20,y*0.92))
+        pygame.draw.rect(DISPLAYWIN, (150,150,150), ((x*0.25) + 5, (y*0.85) + 15, (x*0.5), (y*0.15) - 20))
         text = font.render("Weight not added, resulting imbalance would've been too large",True,(0,0,0))
         DISPLAYWIN.blit(text,((x*0.27),y*0.92))
         pygame.display.update()
